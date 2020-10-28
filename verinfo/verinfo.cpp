@@ -129,6 +129,17 @@ int verinfo( const std::string& filename )
 
                std::cout << "  File version: " << str.str().c_str() << std::endl;
             }
+            if ( fixedFileInfo->dwSignature == 0xFEEF04BD )
+            {
+               std::stringstream str;
+
+               str << HIWORD( fixedFileInfo->dwProductVersionMS ) << ".";
+               str << LOWORD( fixedFileInfo->dwProductVersionMS ) << ".";
+               str << HIWORD( fixedFileInfo->dwProductVersionLS ) << ".";
+               str << LOWORD( fixedFileInfo->dwProductVersionLS );
+
+               std::cout << "  Prod version: " << str.str().c_str() << std::endl;
+            }
          }
       }
       else
