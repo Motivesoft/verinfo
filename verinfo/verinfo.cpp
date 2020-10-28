@@ -2,18 +2,20 @@
 //
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
 #include <Windows.h>
 
-int verinfo( const std::string& filespec );
+int expandFilespecs( const std::string& filespec, std::vector<std::string>& filenames );
+int verinfo( const std::string& filename );
 
 int main( int argc, char** argv )
 {
    int result = 0;
 
-   std::vector<std::string> files;
+   std::vector<std::string> filespecs;
    for ( int loop = 1; loop < argc; )
    {
       std::string arg( argv[ loop++ ] );
@@ -25,12 +27,18 @@ int main( int argc, char** argv )
          }
          else
          {
-            files.push_back( arg );
+            filespecs.push_back( arg );
          }
       }
    }
 
-   for ( std::vector<std::string>::const_iterator it = files.cbegin(); it != files.cend(); it++ )
+   std::vector<std::string> filenames;
+   for ( std::vector<std::string>::const_iterator it = filespecs.cbegin(); it != filespecs.cend(); it++ )
+   {
+      expandFilespecs( *it, filenames );
+   }
+
+   for ( std::vector<std::string>::const_iterator it = filenames.cbegin(); it != filenames.cend(); it++ )
    {
       verinfo( *it );
    }
@@ -38,7 +46,7 @@ int main( int argc, char** argv )
    return result;
 }
 
-int verinfo( const std::string& filespec )
+int expandFilespecs( const std::string& filespec, std::vector<std::string>& filenames )
 {
    std::cout << filespec.c_str() << std::endl;
 
@@ -70,6 +78,12 @@ int verinfo( const std::string& filespec )
          continue;
       }
 
+      // Ignore hidden files
+      if ( findFileData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN )
+      {
+         continue;
+      }
+
       // Ignore . and ..
       if ( strcmp( findFileData.cFileName, "." ) == 0 || strcmp( findFileData.cFileName, "." ) == 0 )
       {
@@ -78,6 +92,8 @@ int verinfo( const std::string& filespec )
 
       std::string filename = std::string( buffer ) + std::string( findFileData.cFileName );
       std::cout << "  " << filename.c_str() << std::endl;
+
+      filenames.push_back( filename );
    }
    while ( ::FindNextFileA( h, &findFileData ) );
    ::FindClose( h );
@@ -85,4 +101,46 @@ int verinfo( const std::string& filespec )
    return 0;
 }
 
+int verinfo( const std::string& filename )
+{
+   DWORD handle;
+   DWORD size = ::GetFileVersionInfoSizeA( filename.c_str(), &handle );
 
+   LPBYTE data = new BYTE[ size ];
+   if ( ::GetFileVersionInfoA( filename.c_str(), 0, size, data ) )
+   {
+      std::cout << filename.c_str() << std::endl;
+
+      LPBYTE buffer;
+      UINT length;
+      if ( ::VerQueryValueA( data, "\\", (LPVOID*) &buffer, &length ) )
+      {
+         if ( size )
+         {
+            VS_FIXEDFILEINFO* fixedFileInfo = (VS_FIXEDFILEINFO*) buffer;
+            if ( fixedFileInfo->dwSignature == 0xFEEF04BD )
+            {
+               std::stringstream str;
+               
+               str << HIWORD( fixedFileInfo->dwFileVersionMS ) << ".";
+               str << LOWORD( fixedFileInfo->dwFileVersionMS ) << ".";
+               str << HIWORD( fixedFileInfo->dwFileVersionLS ) << ".";
+               str << LOWORD( fixedFileInfo->dwFileVersionLS );
+
+               std::cout << "  File version: " << str.str().c_str() << std::endl;
+            }
+         }
+      }
+      else
+      {
+         std::cout << filename.c_str() << " failed" << std::endl;
+      }
+   }
+   else
+   {
+      std::cout << filename.c_str() << " failed" << std::endl;
+   }
+
+   delete[] data;
+   return 0;
+}
