@@ -2,19 +2,87 @@
 //
 
 #include <iostream>
+#include <string>
+#include <vector>
 
-int main()
+#include <Windows.h>
+
+int verinfo( const std::string& filespec );
+
+int main( int argc, char** argv )
 {
-    std::cout << "Hello World!\n";
+   int result = 0;
+
+   std::vector<std::string> files;
+   for ( int loop = 1; loop < argc; )
+   {
+      std::string arg( argv[ loop++ ] );
+      if ( arg.length() > 0 )
+      {
+         if ( arg[ 0 ] == '-' || arg[ 0 ] == '/' )
+         {
+            
+         }
+         else
+         {
+            files.push_back( arg );
+         }
+      }
+   }
+
+   for ( std::vector<std::string>::const_iterator it = files.cbegin(); it != files.cend(); it++ )
+   {
+      verinfo( *it );
+   }
+
+   return result;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+int verinfo( const std::string& filespec )
+{
+   std::cout << filespec.c_str() << std::endl;
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+   // Extract the path part of the search
+   char buffer[ _MAX_PATH ];
+   char* ptr;
+   ::GetFullPathNameA( filespec.c_str(), sizeof( buffer ), buffer, &ptr );
+
+   if ( ptr )
+   {
+      // buffer will now contain the parent path
+      *ptr = '\0';
+   }
+
+   WIN32_FIND_DATAA findFileData;
+   HANDLE h = ::FindFirstFileA( filespec.c_str(), &findFileData );
+
+   if ( h == INVALID_HANDLE_VALUE )
+   {
+      // No matches
+      return 1;
+   }
+
+   do
+   {
+      // Ignore directories
+      if ( findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+      {
+         continue;
+      }
+
+      // Ignore . and ..
+      if ( strcmp( findFileData.cFileName, "." ) == 0 || strcmp( findFileData.cFileName, "." ) == 0 )
+      {
+         continue;
+      }
+
+      std::string filename = std::string( buffer ) + std::string( findFileData.cFileName );
+      std::cout << "  " << filename.c_str() << std::endl;
+   }
+   while ( ::FindNextFileA( h, &findFileData ) );
+   ::FindClose( h );
+
+   return 0;
+}
+
+
