@@ -154,6 +154,10 @@
     <ClInclude Include="FileConfiguration.h" />
     <ClInclude Include="FixedFileInfo.h" />
     <ClInclude Include="LaunchConfiguration.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="verinfo.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
