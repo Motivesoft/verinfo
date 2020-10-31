@@ -1,6 +1,7 @@
 // verinfo.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -8,109 +9,93 @@
 
 #include <Windows.h>
 
-int expandFilespecs( const std::string& filespec, std::vector<std::string>& filenames );
-int verinfo( const std::string& filename );
+#include "FixedFileInfo.h"
+#include "FileConfiguration.h"
+#include "LaunchConfiguration.h"
+
+void scan( const LaunchConfiguration& configuration, const std::vector<std::string>& filelist );
+bool readVersionInfo( const std::string& filename, std::function<void( FixedFileInfo& )> fn );
 
 int main( int argc, char** argv )
 {
-   int result = 0;
+   bool success = true;
 
-   std::vector<std::string> filespecs;
+   FileConfiguration files;
+   LaunchConfiguration::Builder builder;
    for ( int loop = 1; loop < argc; )
    {
       std::string arg( argv[ loop++ ] );
       if ( arg.length() > 0 )
       {
-         if ( arg[ 0 ] == '-' || arg[ 0 ] == '/' )
+         if( builder.isSwitch( arg ) )
          {
-            
+            if ( !builder.process( arg ) )
+            {
+               std::cerr << "Unrecognised argument: " << arg << std::endl;
+               success = false;
+               break;
+            }
          }
          else
          {
-            filespecs.push_back( arg );
+            files.addFileSpec( arg );
          }
       }
    }
 
-   std::vector<std::string> filenames;
-   for ( std::vector<std::string>::const_iterator it = filespecs.cbegin(); it != filespecs.cend(); it++ )
+   if ( success )
    {
-      expandFilespecs( *it, filenames );
-   }
+      LaunchConfiguration configuration = builder.build();
+      std::vector<std::string> filelist = files.getFiles();
 
-   for ( std::vector<std::string>::const_iterator it = filenames.cbegin(); it != filenames.cend(); it++ )
-   {
-      verinfo( *it );
+      if ( !filelist.empty() )
+      {
+         scan( configuration, filelist );
+      }
+      else
+      {
+         std::cerr << "No matching files found" << std::endl;
+      }
    }
-
-   return result;
 }
 
-int expandFilespecs( const std::string& filespec, std::vector<std::string>& filenames )
+void scan( const LaunchConfiguration& configuration, const std::vector<std::string>& filelist )
 {
-   std::cout << filespec.c_str() << std::endl;
-
-   // Extract the path part of the search
-   char buffer[ _MAX_PATH ];
-   char* ptr;
-   ::GetFullPathNameA( filespec.c_str(), sizeof( buffer ), buffer, &ptr );
-
-   if ( ptr )
+   for ( std::vector<std::string>::const_iterator it = filelist.cbegin(); it != filelist.cend(); it++ )
    {
-      // buffer will now contain the parent path
-      *ptr = '\0';
+      if ( !readVersionInfo( *it, [configuration] ( const FixedFileInfo& info )
+      {
+         std::cout << info.getFilename() << std::endl;
+         if ( configuration.showFileVersion() )
+         {
+            std::cout << "  File version: " << info.getFileVersion() << std::endl;
+         }
+         if ( configuration.showProductVersion() )
+         {
+            std::cout << "  Product version: " << info.getProductVersion() << std::endl;
+         }
+
+      } ) )
+      {
+         if ( !configuration.skipFilesWithoutVersion() )
+         {
+            std::cerr << ( *it ).c_str() << " has no version information" << std::endl;
+         }
+      }
    }
 
-   WIN32_FIND_DATAA findFileData;
-   HANDLE h = ::FindFirstFileA( filespec.c_str(), &findFileData );
-
-   if ( h == INVALID_HANDLE_VALUE )
-   {
-      // No matches
-      return 1;
-   }
-
-   do
-   {
-      // Ignore directories
-      if ( findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-      {
-         continue;
-      }
-
-      // Ignore hidden files
-      if ( findFileData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN )
-      {
-         continue;
-      }
-
-      // Ignore . and ..
-      if ( strcmp( findFileData.cFileName, "." ) == 0 || strcmp( findFileData.cFileName, "." ) == 0 )
-      {
-         continue;
-      }
-
-      std::string filename = std::string( buffer ) + std::string( findFileData.cFileName );
-      std::cout << "  " << filename.c_str() << std::endl;
-
-      filenames.push_back( filename );
-   }
-   while ( ::FindNextFileA( h, &findFileData ) );
-   ::FindClose( h );
-
-   return 0;
 }
 
-int verinfo( const std::string& filename )
+bool readVersionInfo( const std::string& filename, std::function<void( FixedFileInfo& )> fn )
 {
+   bool result = false;
+
    DWORD handle;
    DWORD size = ::GetFileVersionInfoSizeA( filename.c_str(), &handle );
 
    LPBYTE data = new BYTE[ size ];
    if ( ::GetFileVersionInfoA( filename.c_str(), 0, size, data ) )
    {
-      std::cout << filename.c_str() << std::endl;
-
       LPBYTE buffer;
       UINT length;
       if ( ::VerQueryValueA( data, "\\", (LPVOID*) &buffer, &length ) )
@@ -120,38 +105,15 @@ int verinfo( const std::string& filename )
             VS_FIXEDFILEINFO* fixedFileInfo = (VS_FIXEDFILEINFO*) buffer;
             if ( fixedFileInfo->dwSignature == 0xFEEF04BD )
             {
-               std::stringstream str;
+               FixedFileInfo verInfo( filename, fixedFileInfo );
                
-               str << HIWORD( fixedFileInfo->dwFileVersionMS ) << ".";
-               str << LOWORD( fixedFileInfo->dwFileVersionMS ) << ".";
-               str << HIWORD( fixedFileInfo->dwFileVersionLS ) << ".";
-               str << LOWORD( fixedFileInfo->dwFileVersionLS );
-
-               std::cout << "  File version: " << str.str().c_str() << std::endl;
-            }
-            if ( fixedFileInfo->dwSignature == 0xFEEF04BD )
-            {
-               std::stringstream str;
-
-               str << HIWORD( fixedFileInfo->dwProductVersionMS ) << ".";
-               str << LOWORD( fixedFileInfo->dwProductVersionMS ) << ".";
-               str << HIWORD( fixedFileInfo->dwProductVersionLS ) << ".";
-               str << LOWORD( fixedFileInfo->dwProductVersionLS );
-
-               std::cout << "  Prod version: " << str.str().c_str() << std::endl;
+               fn( verInfo );
+               result = true;
             }
          }
       }
-      else
-      {
-         std::cout << filename.c_str() << " failed" << std::endl;
-      }
    }
-   else
-   {
-      std::cout << filename.c_str() << " failed" << std::endl;
-   }
-
    delete[] data;
-   return 0;
+
+   return result;
 }

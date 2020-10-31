@@ -147,7 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileConfiguration.cpp" />
     <ClCompile Include="verinfo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FileConfiguration.h" />
+    <ClInclude Include="FixedFileInfo.h" />
+    <ClInclude Include="LaunchConfiguration.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
