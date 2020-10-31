@@ -12,12 +12,14 @@ private:
    bool fileVersion;
    bool productVersion;
    bool ignoreFilesWithoutVersion;
+   bool verbose;
 
-   LaunchConfiguration( bool fileVersion, bool productVersion, bool ignoreFilesWithoutVersion )
+   LaunchConfiguration( bool fileVersion, bool productVersion, bool ignoreFilesWithoutVersion, bool verbose )
    {
       this->fileVersion = fileVersion;
       this->productVersion = productVersion;
       this->ignoreFilesWithoutVersion = ignoreFilesWithoutVersion;
+      this->verbose = verbose;
    }
 
 public:
@@ -26,6 +28,7 @@ public:
       this->fileVersion = copy.fileVersion;
       this->productVersion = copy.productVersion;
       this->ignoreFilesWithoutVersion = copy.ignoreFilesWithoutVersion;
+      this->verbose = copy.verbose;
    }
 
    bool showFileVersion() const
@@ -43,7 +46,10 @@ public:
       return ignoreFilesWithoutVersion;
    }
 
-   void display( const FixedFileInfo& info );
+   bool showVerboseInfo() const
+   {
+      return verbose;
+   }
 
    class Builder
    {
@@ -51,25 +57,11 @@ public:
       bool fileVersion;
       bool productVersion;
       bool ignoreFilesWithoutVersion;
+      bool verbose;
 
       std::vector<std::string> filespecs;
 
    public:
-      void showFileVersion()
-      {
-         fileVersion = true;
-      }
-
-      void showProductVersion()
-      {
-         productVersion = true;
-      }
-
-      void skipFilesWithoutVersion()
-      {
-         ignoreFilesWithoutVersion = true;
-      }
-
       bool isSwitch( const std::string& argv ) const
       {
          return !argv.empty() && ( argv[ 0 ] == '/' || argv[ 0 ] == '-' );
@@ -83,17 +75,21 @@ public:
          // This way, we treat /pv and -pv and --product-version identically
          std::string arg = argv.substr( 1 );
 
-         if ( arg == "pv" || arg == "-product-version" )
+         if ( arg == "fv" || arg == "-file-version" )
          {
-            showProductVersion();
+            fileVersion = true;
          }
-         else if ( arg == "fv" || arg == "-file-version" )
+         else if ( arg == "pv" || arg == "-product-version" )
          {
-            showFileVersion();
+            productVersion = true;
          }
          else if ( arg == "i" || arg == "-ignore-missing-verinfo" )
          {
-            skipFilesWithoutVersion();
+            ignoreFilesWithoutVersion = true;
+         }
+         else if ( arg == "v" || arg == "-verbose" )
+         {
+            verbose = true;
          }
          else
          {
@@ -111,7 +107,7 @@ public:
             productVersion = true;
          }
 
-         return LaunchConfiguration( fileVersion, productVersion, ignoreFilesWithoutVersion );
+         return LaunchConfiguration( fileVersion, productVersion, ignoreFilesWithoutVersion, verbose );
       }
    };
 };

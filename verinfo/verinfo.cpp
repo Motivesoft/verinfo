@@ -13,7 +13,7 @@
 #include "FileConfiguration.h"
 #include "LaunchConfiguration.h"
 
-void scan( const LaunchConfiguration& configuration, const std::vector<std::string>& filelist );
+bool scan( const LaunchConfiguration& configuration, const std::vector<std::string>& filelist );
 bool readVersionInfo( const std::string& filename, std::function<void( FixedFileInfo& )> fn );
 
 int main( int argc, char** argv )
@@ -50,20 +50,32 @@ int main( int argc, char** argv )
 
       if ( !filelist.empty() )
       {
-         scan( configuration, filelist );
+         if ( configuration.showVerboseInfo() )
+         {
+            std::cout << "Scanning " << filelist.size() << " files" << std::endl;
+         }
+
+         if ( !scan( configuration, filelist ) && configuration.showVerboseInfo() )
+         {
+            std::cout << "No matching files have version information" << std::endl;
+         }
       }
       else
       {
-         std::cerr << "No matching files found" << std::endl;
+         if ( configuration.showVerboseInfo() )
+         {
+            std::cerr << "No matching files found" << std::endl;
+         }
       }
    }
 }
 
-void scan( const LaunchConfiguration& configuration, const std::vector<std::string>& filelist )
+bool scan( const LaunchConfiguration& configuration, const std::vector<std::string>& filelist )
 {
+   bool success = false;
    for ( std::vector<std::string>::const_iterator it = filelist.cbegin(); it != filelist.cend(); it++ )
    {
-      if ( !readVersionInfo( *it, [configuration] ( const FixedFileInfo& info )
+      if ( readVersionInfo( *it, [configuration] ( const FixedFileInfo& info )
       {
          std::cout << info.getFilename() << std::endl;
          if ( configuration.showFileVersion() )
@@ -74,16 +86,17 @@ void scan( const LaunchConfiguration& configuration, const std::vector<std::stri
          {
             std::cout << "  Product version: " << info.getProductVersion() << std::endl;
          }
-
       } ) )
       {
-         if ( !configuration.skipFilesWithoutVersion() )
-         {
-            std::cerr << ( *it ).c_str() << " has no version information" << std::endl;
-         }
+         success = true;
+      }
+      else if( !configuration.skipFilesWithoutVersion() )
+      {
+         std::cout << *it << std::endl;
+         std::cout << "  No version information" << std::endl;
       }
    }
-
+   return success;
 }
 
 bool readVersionInfo( const std::string& filename, std::function<void( FixedFileInfo& )> fn )
