@@ -3,8 +3,6 @@
 #include <string>
 #include <vector>
 
-#include <Windows.h>
-
 class FileConfiguration
 {
 private:
@@ -37,5 +35,8 @@ public:
    }
 
    std::vector<std::string> getFiles() const;
-};
 
+   static std::string getFilename( const std::string& filespec );
+
+   static std::string getAppName( const char* argv0 );
+};

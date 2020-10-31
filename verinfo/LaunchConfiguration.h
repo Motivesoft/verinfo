@@ -13,13 +13,17 @@ private:
    bool productVersion;
    bool ignoreFilesWithoutVersion;
    bool verbose;
+   bool version;
+   bool help;
 
-   LaunchConfiguration( bool fileVersion, bool productVersion, bool ignoreFilesWithoutVersion, bool verbose )
+   LaunchConfiguration( bool fileVersion, bool productVersion, bool ignoreFilesWithoutVersion, bool verbose, bool version, bool help )
    {
       this->fileVersion = fileVersion;
       this->productVersion = productVersion;
       this->ignoreFilesWithoutVersion = ignoreFilesWithoutVersion;
       this->verbose = verbose;
+      this->version = version;
+      this->help = help;
    }
 
 public:
@@ -29,6 +33,8 @@ public:
       this->productVersion = copy.productVersion;
       this->ignoreFilesWithoutVersion = copy.ignoreFilesWithoutVersion;
       this->verbose = copy.verbose;
+      this->version = copy.version;
+      this->help = copy.help;
    }
 
    bool showFileVersion() const
@@ -51,6 +57,16 @@ public:
       return verbose;
    }
 
+   bool showVersion() const
+   {
+      return version;
+   }
+
+   bool showHelp() const
+   {
+      return help;
+   }
+
    class Builder
    {
    private:
@@ -58,6 +74,8 @@ public:
       bool productVersion;
       bool ignoreFilesWithoutVersion;
       bool verbose;
+      bool version;
+      bool help;
 
       std::vector<std::string> filespecs;
 
@@ -87,9 +105,17 @@ public:
          {
             ignoreFilesWithoutVersion = true;
          }
-         else if ( arg == "v" || arg == "-verbose" )
+         else if ( arg == "verbose" || arg == "-verbose" )
          {
             verbose = true;
+         }
+         else if ( arg == "v" || arg == "-version" )
+         {
+            version = true;
+         }
+         else if ( arg == "?" || arg == "h" || arg == "-help" )
+         {
+            help = true;
          }
          else
          {
@@ -107,7 +133,7 @@ public:
             productVersion = true;
          }
 
-         return LaunchConfiguration( fileVersion, productVersion, ignoreFilesWithoutVersion, verbose );
+         return LaunchConfiguration( fileVersion, productVersion, ignoreFilesWithoutVersion, verbose, version, help );
       }
    };
 };

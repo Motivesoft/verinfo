@@ -31,7 +31,7 @@ int main( int argc, char** argv )
          {
             if ( !builder.process( arg ) )
             {
-               std::cerr << "Unrecognised argument: " << arg << std::endl;
+               std::cout << "Unrecognised argument: " << arg << std::endl;
                success = false;
                break;
             }
@@ -43,16 +43,34 @@ int main( int argc, char** argv )
       }
    }
 
-   if ( success )
+   LaunchConfiguration configuration = builder.build();
+   if ( !success || configuration.showHelp() )
    {
-      LaunchConfiguration configuration = builder.build();
+      std::string appName = FileConfiguration::getAppName( argv[ 0 ] );
+      std::cout << std::endl;
+      std::cout << "Usage:" << std::endl;
+      std::cout << "  " << appName.c_str() << " [parameters] [filespecs]" << std::endl;
+      std::cout << std::endl;
+      std::cout << "Parameters:" << std::endl;
+      std::cout << "  -h, --help                      this help information" << std::endl;
+      std::cout << "  -v, --version                   show the version of this application" << std::endl;
+      std::cout << "  --verbose                       display verbose output" << std::endl;
+      std::cout << "  -i, --ignore-missing-verinfo    don't display output for files without version information" << std::endl;
+      std::cout << "  -pv, --product-version          display the product version information (default)" << std::endl;
+      std::cout << "  -fv, --file-version             display the file version information" << std::endl;
+      std::cout << std::endl;
+      std::cout << "Example:" << std::endl;
+      std::cout << "  " << appName.c_str() << " -pv C:\\Windows\\*.exe" << std::endl;
+   }
+   else
+   {
       std::vector<std::string> filelist = files.getFiles();
 
       if ( !filelist.empty() )
       {
          if ( configuration.showVerboseInfo() )
          {
-            std::cout << "Scanning " << filelist.size() << " files" << std::endl;
+            std::cout << "Scanning " << filelist.size() << " file(s)" << std::endl;
          }
 
          if ( !scan( configuration, filelist ) && configuration.showVerboseInfo() )
