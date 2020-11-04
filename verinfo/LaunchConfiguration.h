@@ -80,6 +80,16 @@ public:
       std::vector<std::string> filespecs;
 
    public:
+      Builder()
+      {
+         fileVersion = false;
+         productVersion = false;
+         ignoreFilesWithoutVersion = false;
+         verbose = false;
+         version = false;
+         help = false;
+      }
+
       bool isSwitch( const std::string& argv ) const
       {
          return !argv.empty() && ( argv[ 0 ] == '/' || argv[ 0 ] == '-' );
