@@ -3,7 +3,10 @@
 bin
 obj
 x64
+Release
 
 # Files
 **/*.user
 *.aps
+setup.exe
+*.msi
