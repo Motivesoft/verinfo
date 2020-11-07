@@ -159,6 +159,11 @@
   <ItemGroup>
     <ResourceCompile Include="verinfo.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="favicon.ico" />
+    <Image Include="icon.ico" />
+    <Image Include="icon1.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
