@@ -15,13 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DF360E1352094FBE9D0780469D472F29"
+        "MsmKey" = "8:_247BEE25B0A24453AE5F1C395FFF7B58"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -81,7 +75,7 @@
             "PromptEnabled" = "11:TRUE"
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
-            "ComponentsUrl" = "8:"
+            "ComponentsUrl" = "8:C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Redist"
                 "Items"
                 {
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.14.0.x64"
@@ -112,30 +106,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A03FC3561B81419E9BE405231AE2AAAC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_247BEE25B0A24453AE5F1C395FFF7B58"
             {
             "SourcePath" = "8:banner.bmp"
             "TargetName" = "8:banner.bmp"
-            "Tag" = "8:"
-            "Folder" = "8:_41428856AA9E459EAA4CFF6FDDC07022"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DF360E1352094FBE9D0780469D472F29"
-            {
-            "SourcePath" = "8:icon.ico"
-            "TargetName" = "8:icon.ico"
             "Tag" = "8:"
             "Folder" = "8:_41428856AA9E459EAA4CFF6FDDC07022"
             "Condition" = "8:"
@@ -209,7 +183,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:VersionInfo"
         "ProductCode" = "8:{373589B5-D119-425B-8A2D-74130A9B80B2}"
-        "PackageCode" = "8:{BBFBED1D-4348-4A1F-BE17-6F109E017EC3}"
+        "PackageCode" = "8:{944C76E5-0C2B-405B-BFFD-EAA6669D4863}"
         "UpgradeCode" = "8:{5B6EF819-281C-4A8E-A074-E280C15567CB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -222,11 +196,11 @@
         "ARPHELPLINK" = "8:https://github.com/Motivesoft/verinfo"
         "Title" = "8:VersionInfo"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Ian Brown"
+        "ARPCONTACT" = "8:Motivesoft"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:Access version information from files using a command line utility"
         "ARPURLINFOABOUT" = "8:https://motivesoft.co.uk"
-        "ARPPRODUCTICON" = "8:_DF360E1352094FBE9D0780469D472F29"
+        "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -329,20 +303,6 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_16AEA22FF4D04915B9DC716D0194F1ED"
-            {
-            "Name" = "8:Shortcut to Primary Output from verinfo (Active)"
-            "Arguments" = "8:"
-            "Description" = "8:"
-            "ShowCmd" = "3:1"
-            "IconIndex" = "3:0"
-            "Transitive" = "11:FALSE"
-            "Target" = "8:_788B912FDECF4F448CB3424A0F654146"
-            "Folder" = "8:_E4C70C986F8F43128C9C4B0003A8CB50"
-            "WorkingFolder" = "8:_41428856AA9E459EAA4CFF6FDDC07022"
-            "Icon" = "8:"
-            "Feature" = "8:"
-            }
         }
         "UserInterface"
         {
@@ -370,8 +330,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -393,8 +352,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -442,8 +400,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -480,8 +437,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -504,7 +460,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Value" = "8:_247BEE25B0A24453AE5F1C395FFF7B58"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -552,8 +508,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "InstallAllUsersVisible"
@@ -597,8 +552,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -648,8 +602,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -680,8 +633,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "UpdateText"
@@ -725,8 +677,7 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:2"
-                            "Value" = "8:_A03FC3561B81419E9BE405231AE2AAAC"
+                            "Setting" = "3:1"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
