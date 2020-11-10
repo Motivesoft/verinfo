@@ -160,7 +160,6 @@
     <ResourceCompile Include="verinfo.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="favicon.ico" />
     <Image Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
